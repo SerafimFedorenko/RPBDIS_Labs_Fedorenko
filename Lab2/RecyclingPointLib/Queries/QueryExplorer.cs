@@ -21,7 +21,7 @@ namespace RecyclingPointLib.Queries
                 new
                 {
                     Код_типа_склада = st.Id,
-                    Наименования_типа_склада = st.Name,
+                    Наименование_типа_склада = st.Name,
                     Температура = st.Temperature,
                     Влажность = st.Humidity
                 });
@@ -34,7 +34,7 @@ namespace RecyclingPointLib.Queries
                 .Select(stType => new
                 {
                     Код_типа_склада = stType.Id,
-                    Наименования_типа_склада = stType.Name,
+                    Наименование_типа_склада = stType.Name,
                     Температура = stType.Temperature,
                     Влажность = stType.Humidity
                 });

@@ -31,7 +31,7 @@ namespace RecPointApp
                             break;
                         case "2":
                             var storageTypesByTemperature = QueryExplorer.GetStorageTypesByTemperature(context, 10);
-                            PrintResult(storageTypesByTemperature, "Температура на каждом типе складов:");
+                            PrintResult(storageTypesByTemperature, "Типы складов с температурой меньше 15":");
                             break;
                         case "3":
                             var storageTypesSquare = QueryExplorer.GetSquareSum(context, 10);

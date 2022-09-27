@@ -1,13 +1,7 @@
 ﻿using RecyclingPointLib.Data;
 using RecyclingPointLib.Models;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecyclingPointLib.Queries
 {
@@ -57,7 +51,8 @@ namespace RecyclingPointLib.Queries
             var query = context.Employees.OrderByDescending(e => e.Id).Join(context.Positions,
                 e => e.PositionId,
                 p => p.Id,
-                (e, p) => new { 
+                (e, p) => new {
+                    Код = e.Id,
                     Фамилия = e.Surname,
                     Имя = e.Name,
                     Отчество = e.Patronymic, 
@@ -74,6 +69,7 @@ namespace RecyclingPointLib.Queries
                 e => e.PositionId,
                 p => p.Id,
                 (e, p) => new {
+                    Код = e.Id,
                     Фамилия = e.Surname,
                     Имя = e.Name,
                     Отчество = e.Patronymic,

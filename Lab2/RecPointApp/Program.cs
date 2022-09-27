@@ -1,13 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
-using System.Linq;
-using System.Threading.Tasks;
-using RecyclingPointLib;
+﻿using System.Collections;
 using RecyclingPointLib.Data;
-using RecyclingPointLib.Models;
 using RecyclingPointLib.Queries;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace RecPointApp
 {
@@ -31,7 +24,7 @@ namespace RecPointApp
                             break;
                         case "2":
                             var storageTypesByTemperature = QueryExplorer.GetStorageTypesByTemperature(context, 10);
-                            PrintResult(storageTypesByTemperature, "Типы складов с температурой меньше 15":");
+                            PrintResult(storageTypesByTemperature, "Типы складов с температурой меньше 15");
                             break;
                         case "3":
                             var storageTypesSquare = QueryExplorer.GetSquareSum(context, 10);
@@ -80,10 +73,10 @@ namespace RecPointApp
                             break;
                         case "9":
                             PrintResult(QueryExplorer.GetEmployeesPositions(context, 10), "Последние добавленные сотрудники: \n");
-                            Console.WriteLine("Введите код сотрудника: ");
+                            Console.WriteLine("Введите код сотрудника: \n");
                             int EmployeeId = Convert.ToInt32(Console.ReadLine());
                             Console.WriteLine("Будет удален сотрудник с кодом: ");
-                            Console.WriteLine(context.Employees.Where(p => p.Id == EmployeeId).First());
+                            Console.WriteLine(context.Employees.Where(p => p.Id == EmployeeId).First().Id);
                             QueryExplorer.DelEmployee(context, EmployeeId);
                             PrintResult(QueryExplorer.GetEmployeesPositions(context, 10), "Последние добавленные сотрудники: \n");
                             break;

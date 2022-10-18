@@ -12,6 +12,7 @@ namespace RecyclingPointLib.Data
         public DbSet<Employee>? Employees { get; set; }
         public DbSet<Storage>? Storages { get; set; }
         public DbSet<AcceptedRecyclable>? AcceptedRecyclables { get; set; }
+<<<<<<< Updated upstream
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             ConfigurationBuilder builder = new();
@@ -29,6 +30,11 @@ namespace RecyclingPointLib.Data
                 //.UseSqlite(connectionString)
                 .Options;
             optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
+=======
+        public RecPointContext(DbContextOptions<RecPointContext> options) : base(options)
+        {
+
+>>>>>>> Stashed changes
         }
     }
 }

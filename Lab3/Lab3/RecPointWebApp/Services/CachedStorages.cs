@@ -19,7 +19,7 @@ namespace RecPointWebApp.Services
 
         public void AddStorages(string cacheKey, int rowNumber = 10)
         {
-            IEnumerable<Storage> storages = _context.Storages.ToList();
+            IEnumerable<Storage> storages = _context.Storages.Take(rowNumber).ToList();
             if(storages != null)
             {
                 _cache.Set(cacheKey, storages, new MemoryCacheEntryOptions

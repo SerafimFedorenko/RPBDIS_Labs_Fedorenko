@@ -76,16 +76,16 @@ namespace RecPointWebApp
             });
 
             // Вывод кэшированной информации из таблицы базы данных
-            app.Map("/tanks", (appBuilder) =>
+            app.Map("/positions", (appBuilder) =>
             {
                 appBuilder.Run(async (context) =>
                 {
                     //обращение к сервису
-                    ICachedPositions cachedTanksService = context.RequestServices.GetService<ICachedPositions>();
-                    IEnumerable<Position> positions = cachedTanksService.GetPositions("Positions10");
-                    string HtmlString = "<HTML><HEAD><TITLE>Емкости</TITLE></HEAD>" +
+                    ICachedPositions cachedPositions = context.RequestServices.GetService<ICachedPositions>();
+                    IEnumerable<Position> positions = cachedPositions.GetPositions(10);
+                    string HtmlString = "<HTML><HEAD><TITLE>Должности</TITLE></HEAD>" +
                     "<META http-equiv='Content-Type' content='text/html; charset=utf-8'/>" +
-                    "<BODY><H1>Список емкостей</H1>" +
+                    "<BODY><H1>Список должностей</H1>" +
                     "<TABLE BORDER=1>";
                     HtmlString += "<TR>";
                     HtmlString += "<TH>Код</TH>";
@@ -100,6 +100,81 @@ namespace RecPointWebApp
                     }
                     HtmlString += "</TABLE>";
                     HtmlString += "<BR><A href='/'>Главная</A></BR>";
+                    HtmlString += "<BR><A href='/positions'>Должности</A></BR>";
+                    HtmlString += "<BR><A href='/employees'>Сотрудники</A></BR>";
+                    HtmlString += "<BR><A href='/storages'>Складские помещения</A></BR>";
+                    HtmlString += "</BODY></HTML>";
+
+                    // Вывод данных
+                    await context.Response.WriteAsync(HtmlString);
+                });
+            });
+
+            app.Map("/employees", (appBuilder) =>
+            {
+                appBuilder.Run(async (context) =>
+                {
+                    //обращение к сервису
+                    ICachedEmployees cachedEmployees  = context.RequestServices.GetService<ICachedEmployees>();
+                    IEnumerable<Employee> employees = cachedEmployees.GetEmployees(10);
+                    string HtmlString = "<HTML><HEAD><TITLE>Сотрудники</TITLE></HEAD>" +
+                    "<META http-equiv='Content-Type' content='text/html; charset=utf-8'/>" +
+                    "<BODY><H1>Список сотрудников</H1>" +
+                    "<TABLE BORDER=1>";
+                    HtmlString += "<TR>";
+                    HtmlString += "<TH>Код</TH>";
+                    HtmlString += "<TH>Фамилия</TH>";
+                    HtmlString += "<TH>Имя</TH>";
+                    HtmlString += "<TH>Отчество</TH>";
+                    HtmlString += "<TH>Должность</TH>";
+                    HtmlString += "</TR>";
+                    foreach (var employee in employees)
+                    {
+                        HtmlString += "<TR>";
+                        HtmlString += "<TD>" + employee.Id + "</TD>";
+                        HtmlString += "<TD>" + employee.Surname + "</TD>";
+                        HtmlString += "<TD>" + employee.Name + "</TD>";
+                        HtmlString += "<TD>" + employee.Patronymic + "</TD>";
+                        HtmlString += "<TD>" + employee.Position?.Name + "</TD>";
+                        HtmlString += "</TR>";
+                    }
+                    HtmlString += "</TABLE>";
+                    HtmlString += "<BR><A href='/'>Главная</A></BR>";
+                    HtmlString += "<BR><A href='/positions'>Должности</A></BR>";
+                    HtmlString += "<BR><A href='/employees'>Сотрудники</A></BR>";
+                    HtmlString += "<BR><A href='/storages'>Складские помещения</A></BR>";
+                    HtmlString += "</BODY></HTML>";
+
+                    // Вывод данных
+                    await context.Response.WriteAsync(HtmlString);
+                });
+            });
+
+            app.Map("/storages", (appBuilder) =>
+            {
+                appBuilder.Run(async (context) =>
+                {
+                    //обращение к сервису
+                    ICachedStorages cachedStorages = context.RequestServices.GetService<ICachedStorages>();
+                    IEnumerable<Storage> storages = cachedStorages.GetStorages(10);
+                    string HtmlString = "<HTML><HEAD><TITLE>Складские помещения</TITLE></HEAD>" +
+                    "<META http-equiv='Content-Type' content='text/html; charset=utf-8'/>" +
+                    "<BODY><H1>Список складских помещений</H1>" +
+                    "<TABLE BORDER=1>";
+                    HtmlString += "<TR>";
+                    HtmlString += "<TH>Код</TH>";
+                    HtmlString += "<TH>Наименование</TH>";
+                    HtmlString += "<TH>Номер</TH>";
+                    HtmlString += "</TR>";
+                    foreach (var storage in storages)
+                    {
+                        HtmlString += "<TR>";
+                        HtmlString += "<TD>" + storage.Id + "</TD>";
+                        HtmlString += "<TD>" + storage.Name+ "</TD>";
+                        HtmlString += "<TD>" + storage.Number + "</TD>";
+                        HtmlString += "</TR>";
+                    }
+                    HtmlString += "</TABLE>";
                     HtmlString += "<BR><A href='/'>Главная</A></BR>";
                     HtmlString += "<BR><A href='/positions'>Должности</A></BR>";
                     HtmlString += "<BR><A href='/employees'>Сотрудники</A></BR>";
@@ -119,9 +194,9 @@ namespace RecPointWebApp
                 ICachedEmployees cachedEmployees = context.RequestServices.GetService<ICachedEmployees>();
                 ICachedStorages cachedStorages = context.RequestServices.GetService<ICachedStorages>();
                 cachedPositions.AddPositions("Positions10");
-                cachedEmployees.AddEmployees("Employees10");
+                cachedEmployees.AddEmployees("Employees10", 21000);
                 cachedStorages.AddStorages("Storages10");
-                string HtmlString = "<HTML><HEAD><TITLE>Емкости</TITLE></HEAD>" +
+                string HtmlString = "<HTML><HEAD><TITLE>Главная</TITLE></HEAD>" +
                 "<META http-equiv='Content-Type' content='text/html; charset=utf-8'/>" +
                 "<BODY><H1>Главная</H1>";
                 HtmlString += "<H2>Данные записаны в кэш сервера</H2>";

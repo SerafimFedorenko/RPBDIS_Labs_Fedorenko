@@ -16,7 +16,7 @@ namespace RecPointWebApp.Services
 
         public void AddEmployees(string cacheKey, int rowNumber = 10)
         {
-            IEnumerable<Employee> employees = _context.Employees.ToList();
+            IEnumerable<Employee> employees = _context.Employees.Take(rowNumber).ToList();
             if (employees != null)
             {
                 _cache.Set(cacheKey, employees, new MemoryCacheEntryOptions

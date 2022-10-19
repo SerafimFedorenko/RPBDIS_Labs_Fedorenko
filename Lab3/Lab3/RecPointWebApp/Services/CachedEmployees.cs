@@ -14,7 +14,7 @@ namespace RecPointWebApp.Services
             _cache = cache;
         }
 
-        public void AddEmployees(string cacheKey, int rowNumber = 10)
+        public void AddEmployees(string cacheKey, int rowNumber)
         {
             IEnumerable<Employee> employees = _context.Employees.Take(rowNumber).ToList();
             if (employees != null)
@@ -26,12 +26,12 @@ namespace RecPointWebApp.Services
             }
         }
 
-        public IEnumerable<Employee> GetEmployees(int rowNumber = 10)
+        public IEnumerable<Employee> GetEmployees(int rowNumber)
         {
             return _context.Employees.Take(rowNumber).ToList();
         }
 
-        public IEnumerable<Employee> GetEmployees(string cacheKey, int rowNumber = 10)
+        public IEnumerable<Employee> GetEmployees(string cacheKey, int rowNumber)
         {
             IEnumerable<Employee> employees;
             if (!_cache.TryGetValue(cacheKey, out employees))

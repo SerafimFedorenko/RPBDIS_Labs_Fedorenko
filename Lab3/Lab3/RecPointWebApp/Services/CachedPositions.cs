@@ -15,7 +15,7 @@ namespace RecPointWebApp.Services
             _cache = cache;
         }
 
-        public void AddPositions(string cacheKey, int rowNumber = 1000)
+        public void AddPositions(string cacheKey, int rowNumber)
         {
             IEnumerable<Position> positions = _context.Positions.Take(rowNumber).ToList();
             if (positions != null)
@@ -27,12 +27,12 @@ namespace RecPointWebApp.Services
             }
         }
 
-        public IEnumerable<Position> GetPositions(int rowNumber = 1000)
+        public IEnumerable<Position> GetPositions(int rowNumber)
         {
             return _context.Positions.Take(rowNumber).ToList();
         }
 
-        public IEnumerable<Position> GetPositions(string cacheKey, int rowNumber = 1000)
+        public IEnumerable<Position> GetPositions(string cacheKey, int rowNumber)
         {
             IEnumerable<Position> positions;
             if (!_cache.TryGetValue(cacheKey, out positions))

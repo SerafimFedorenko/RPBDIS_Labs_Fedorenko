@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace FuelStation.Infrastructure
+namespace RecPointWebApp.Infrastructure
 {
     // Методы расширения для ISession для работы с произвольными объектами
     public static class SessionExtensions

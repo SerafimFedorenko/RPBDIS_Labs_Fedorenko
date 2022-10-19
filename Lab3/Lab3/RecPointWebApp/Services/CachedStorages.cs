@@ -17,7 +17,7 @@ namespace RecPointWebApp.Services
             _cache = cache;
         }
 
-        public void AddStorages(string cacheKey, int rowNumber = 10)
+        public void AddStorages(string cacheKey, int rowNumber)
         {
             IEnumerable<Storage> storages = _context.Storages.Take(rowNumber).ToList();
             if(storages != null)
@@ -29,12 +29,12 @@ namespace RecPointWebApp.Services
             }
         }
 
-        public IEnumerable<Storage> GetStorages(int rowNumber = 10)
+        public IEnumerable<Storage> GetStorages(int rowNumber)
         {
             return _context.Storages.Take(rowNumber).ToList();
         }
 
-        public IEnumerable<Storage> GetStorages(string cacheKey, int rowNumber = 10)
+        public IEnumerable<Storage> GetStorages(string cacheKey, int rowNumber)
         {
             IEnumerable<Storage> storages;
             if(!_cache.TryGetValue(cacheKey, out storages))

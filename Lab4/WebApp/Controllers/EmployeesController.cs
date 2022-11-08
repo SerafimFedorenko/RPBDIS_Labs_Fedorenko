@@ -18,10 +18,10 @@ namespace WebApp.Controllers
         }
 
         //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(SortState sortOrder, string searchSurname, string searchPosition)
         {
             int rowsNumber = 50;
-            IEnumerable<EmployeeViewModel> employeesViewModel = _context.Employees.Take(rowsNumber)
+            IQueryable<EmployeeViewModel> employeesViewModel = _context.Employees.Take(rowsNumber)
                 .Select(e => new EmployeeViewModel
                 {
                     Id = e.Id,
@@ -32,18 +32,19 @@ namespace WebApp.Controllers
                     PositionName = e.Position.Name
                 }
             );
+            employeesViewModel = Search(employeesViewModel, sortOrder, searchSurname, searchPosition);
             EmployeesViewModel employeesView = new EmployeesViewModel()
             {
                 Employees = employeesViewModel
             };
             return View(employeesView);
         }
-        //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
         private IQueryable<EmployeeViewModel> Search(IQueryable<EmployeeViewModel> employees, 
             SortState sortOrder, string searchSurname, string searchPosition)
         {
-            employees = employees.Include(e => e.Surname).Include(e => e.PositionName)
-                .Where(e => e.Surname.Contains(searchSurname ?? "") & e.PositionName.Contains(searchPosition ?? ""));
+            employees = employees.Where(e => e.Surname.Contains(searchSurname ?? "") 
+            & e.PositionName.Contains(searchPosition ?? ""));
 
             ViewData["Surname"] = sortOrder == SortState.SurnameAsc ? SortState.SurnameDesc : SortState.SurnameAsc;
             ViewData["Name"] = sortOrder == SortState.NameAsc ? SortState.NameDesc : SortState.NameAsc;

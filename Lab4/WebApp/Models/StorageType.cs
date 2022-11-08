@@ -1,10 +1,12 @@
-﻿using WebApp.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using WebApp.Models;
 
 namespace WebApp.Models
 {
     public class StorageType
     {
         public int Id { get; set; }
+        [Display(Name = "Тип склада")]
         public string? Name { get; set; }
         public int Temperature { get; set; }
         public int Humidity { get; set; }

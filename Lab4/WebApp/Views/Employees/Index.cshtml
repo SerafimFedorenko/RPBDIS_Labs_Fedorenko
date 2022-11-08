@@ -24,16 +24,24 @@
 				</a>
 			</th>
 			<th>
-				Имя
+				<a asp-action="Index" asp-route-sortOrder="@ViewBag.Name">
+					Имя
+				</a>
 			</th>
 			<th>
-				Отчество
+				<a asp-action="Index" asp-route-sortOrder="@ViewBag.Patronymic">
+					Отчество
+				</a>
 			</th>
 			<th>
-				Опыт
+				<a asp-action="Index" asp-route-sortOrder="@ViewBag.Experience">
+					Опыт
+				</a>
 			</th>
 			<th>
-				Должность
+				<a asp-action="Index" asp-route-sortOrder="@ViewBag.PositionName">
+					Должность
+				</a>
 			</th>
 		</tr>
 	</thead>

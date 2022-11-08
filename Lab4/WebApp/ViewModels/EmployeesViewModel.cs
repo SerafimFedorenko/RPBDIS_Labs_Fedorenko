@@ -1,5 +1,5 @@
-﻿using RecyclingPointLib.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using WebApp.Models;
 
 namespace WebApp.ViewModels
 {

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RecyclingPointLib.Data;
-using RecyclingPointLib.Models;
+using WebApp.Data;
+using WebApp.Models;
 using System.Threading.Tasks;
 using WebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WebApp.Models;
 using Microsoft.Data.SqlClient;
 
 namespace WebApp.Controllers

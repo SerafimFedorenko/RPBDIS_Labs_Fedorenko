@@ -1,4 +1,4 @@
-﻿using RecyclingPointLib.Models;
+﻿using WebApp.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.ViewModels

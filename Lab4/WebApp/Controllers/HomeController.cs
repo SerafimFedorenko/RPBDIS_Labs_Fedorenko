@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RecyclingPointLib.Data;
-using RecyclingPointLib.Models;
-using System.Diagnostics;
+using WebApp.Data;
 using WebApp.Models;
+using System.Diagnostics;
 using WebApp.ViewModels;
 
 namespace WebApp.Controllers

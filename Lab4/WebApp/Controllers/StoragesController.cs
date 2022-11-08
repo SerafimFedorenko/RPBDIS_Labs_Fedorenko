@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RecyclingPointLib.Data;
+using WebApp.Data;
 using System.Threading.Tasks;
 
 namespace WebApp.Controllers

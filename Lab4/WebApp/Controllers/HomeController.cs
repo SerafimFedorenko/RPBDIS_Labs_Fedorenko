@@ -22,7 +22,10 @@ namespace WebApp.Controllers
             List<Storage> storages = _db.Storages.Take(rowsNumber).ToList();
             List<EmployeeViewModel> employees = _db.Employees.Select(e => new EmployeeViewModel()
             {
-                FullName = e.Surname + " " + e.Name + " " + e.Patronymic,
+                Id = e.Id,
+                Name = e.Name,
+                Surname = e.Surname,
+                Patronymic = e.Patronymic,
                 Experience = e.Experience,
                 PositionName = e.Position.Name
             }).Take(rowsNumber).ToList();

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApp.ViewModels.EmployeeViewModel>
+﻿@model WebApp.ViewModels.EmployeesViewModel
 @{
 	ViewData["Title"] = "Сотрудники";
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,34 +6,46 @@
 
 <h2>Сотрудники</h2>
 
-<p>
-</p>
+@using (Html.BeginForm("Index", "Employees", FormMethod.Post))
+{
+	<fieldset>
+		Фамилия: @Html.TextBox("searchSurname", "")
+		Должность: @Html.TextBox("searchPosition", "")
+		<input type="submit" value="Найти" />
+	</fieldset>
+}
+
 <table class="table">
 	<thead>
 		<tr>
 			<th>
-				@Html.DisplayNameFor(model => model.FullName)
+				<a asp-action="Index" asp-route-sortOrder="@ViewBag.Surname">
+					Фамилия
+				</a>
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Experience)
+				Имя
 			</th>
 			<th>
-				@Html.DisplayNameFor(model => model.Position)
+				Отчество
+			</th>
+			<th>
+				Опыт
+			</th>
+			<th>
+				Должность
+			</th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model)
+		@foreach (var item in Model.Employees)
 		{
 			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.FullName)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Experience)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Position)
-				</td>
+				<td>@item.Surname</td>
+				<td>@item.Name</td>
+				<td>@item.Patronymic</td>
+				<td>@item.Experience</td>
+				<td>@item.PositionName</td>
 			</tr>
 		}
 	</tbody>

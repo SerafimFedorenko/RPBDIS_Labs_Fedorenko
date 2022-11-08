@@ -4,7 +4,7 @@ namespace RecyclingPointLib.Models
     public class Position
     {
         public int Id { get; set; }
-        [Display(Name = "Наименование")]
+        [Display(Name = "Должность")]
         public string? Name { get; set; }
         public ICollection<Employee> Employees { get; set; }
         public Position()

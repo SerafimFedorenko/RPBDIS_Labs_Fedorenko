@@ -14,6 +14,7 @@ namespace WebApp.Controllers
             _db = db;
         }
 
+        //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
         public IActionResult Index()
         {
             int rowsNumber = 50;

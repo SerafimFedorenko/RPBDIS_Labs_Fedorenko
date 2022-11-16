@@ -17,7 +17,7 @@ namespace WebApp.Controllers
             _context = context;
         }
 
-        //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
         public async Task<IActionResult> Index(SortState sortOrder, string searchSurname, string searchPosition)
         {
             int rowsNumber = 50;

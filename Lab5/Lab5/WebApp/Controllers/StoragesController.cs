@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
-using WebApp.ViewModels;
-using WebApp.Infrastructure;
-using System.Data;
 using WebApp.Models.SortStates;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
@@ -56,74 +52,74 @@ namespace WebApp.Controllers
             return View(storagesView);
         }
 
-        // GET: Employees/Details/5
+        // GET: Storages/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Storages == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Position)
+            var storage = await _context.Storages
+                .Include(s => s.StorageType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (storage == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(storage);
         }
 
-        // GET: Employees/Create
+        // GET: Storages/Create
         public IActionResult Create()
         {
-            ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name");
+            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Id");
             return View();
         }
 
-        // POST: Employees/Create
+        // POST: Storages/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PositionId,Name,Surname,Patronymic,Experience")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,StorageTypeId,Name,Number,Square,Capacity,Occupancy,Depreciation,CheckDate")] Storage storage)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
+                _context.Add(storage);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", employee.PositionId);
-            return View(employee);
+            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Id", storage.StorageTypeId);
+            return View(storage);
         }
 
-        // GET: Employees/Edit/5
+        // GET: Storages/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Storages == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var storage = await _context.Storages.FindAsync(id);
+            if (storage == null)
             {
                 return NotFound();
             }
-            ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", employee.PositionId);
-            return View(employee);
+            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Id", storage.StorageTypeId);
+            return View(storage);
         }
 
-        // POST: Employees/Edit/5
+        // POST: Storages/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PositionId,Name,Surname,Patronymic,Experience")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StorageTypeId,Name,Number,Square,Capacity,Occupancy,Depreciation,CheckDate")] Storage storage)
         {
-            if (id != employee.Id)
+            if (id != storage.Id)
             {
                 return NotFound();
             }
@@ -132,12 +128,12 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(storage);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Id))
+                    if (!StorageExists(storage.Id))
                     {
                         return NotFound();
                     }
@@ -148,53 +144,52 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PositionId"] = new SelectList(_context.Positions, "Id", "Name", employee.PositionId);
-            return View(employee);
+            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Id", storage.StorageTypeId);
+            return View(storage);
         }
 
-        // GET: Employees/Delete/5
+        // GET: Storages/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Employees == null)
+            if (id == null || _context.Storages == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Position)
+            var storage = await _context.Storages
+                .Include(s => s.StorageType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (storage == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(storage);
         }
 
-        // POST: Employees/Delete/5
+        // POST: Storages/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Employees == null)
+            if (_context.Storages == null)
             {
-                return Problem("Entity set 'RecPointContext.Employees'  is null.");
+                return Problem("Entity set 'RecPointContext.Storages'  is null.");
             }
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
+            var storage = await _context.Storages.FindAsync(id);
+            if (storage != null)
             {
-                _context.Employees.Remove(employee);
+                _context.Storages.Remove(storage);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeeExists(int id)
+        private bool StorageExists(int id)
         {
-            return _context.Employees.Any(e => e.Id == id);
+          return _context.Storages.Any(e => e.Id == id);
         }
-
         private IQueryable<Storage> Search(IQueryable<Storage> storages,
             SortStateStorage sortOrder, string searchStorageType, string searchName)
         {

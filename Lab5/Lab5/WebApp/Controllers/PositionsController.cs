@@ -7,12 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
+using WebApp.Models.SortStates;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
     public class PositionsController : Controller
     {
         private readonly RecPointContext _context;
+        private int _pageSize = 25;
+        private string _currentPage = "pagePositions";
+        private string _currentSortOrder = "sortOrder";
+        private string _currentFilterPosition = "searchPositionPositions";
 
         public PositionsController(RecPointContext context)
         {
@@ -20,9 +26,27 @@ namespace WebApp.Controllers
         }
 
         // GET: Positions
-        public async Task<IActionResult> Index()
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        public IActionResult Index(SortStatePosition? sortOrder, string searchPosition, int? page, bool resetFilter = false)
         {
-              return View(await _context.Positions.ToListAsync());
+            IQueryable<Position> positions = _context.Positions;
+            sortOrder ??= GetSortStateFromSessionOrSetDefault();
+            page ??= GetCurrentPageFromSessionOrSetDefault();
+            if (resetFilter)
+            {
+                HttpContext.Session.Remove(_currentFilterPosition);
+            }
+            searchPosition ??= GetCurrentFilterPositionOrSetDefault();
+            positions = Search(positions, (SortStatePosition)sortOrder, searchPosition);
+            var count = positions.Count();
+            positions = positions.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            SaveValuesInSession((SortStateEmployee)sortOrder, (int)page, searchPosition);
+            PositionsViewModel positionsView = new PositionsViewModel()
+            {
+                Positions = positions,
+                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+            };
+            return View(positionsView);
         }
 
         // GET: Positions/Details/5
@@ -156,6 +180,49 @@ namespace WebApp.Controllers
         private bool PositionExists(int id)
         {
           return _context.Positions.Any(e => e.Id == id);
+        }
+        private IQueryable<Position> Search(IQueryable<Position> positions,
+            SortStatePosition sortOrder, string searchPosition)
+        {
+            ViewData["searchPosition"] = searchPosition;
+            positions = positions.Where(p => p.Name.Contains(searchPosition ?? ""));
+
+            ViewData["Name"] = sortOrder == SortStatePosition.NameAsc ? SortStatePosition.NameDesc : SortStatePosition.NameAsc;
+
+            positions = sortOrder switch
+            {
+                SortStatePosition.NameAsc => positions.OrderBy(p => p.Name),
+                SortStatePosition.NameDesc => positions.OrderByDescending(p => p.Name),
+                SortStatePosition.No => positions.OrderBy(p => p.Id),
+                _ => positions.OrderBy(p => p.Id)
+            };
+
+            return positions;
+        }
+        private void SaveValuesInSession(SortStateEmployee sortOrder, int page, string searchPosition)
+        {
+            HttpContext.Session.Remove(_currentSortOrder);
+            HttpContext.Session.Remove(_currentPage);
+            HttpContext.Session.Remove(_currentFilterPosition);
+            HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
+            HttpContext.Session.SetString(_currentPage, page.ToString());
+            HttpContext.Session.SetString(_currentFilterPosition, searchPosition);
+        }
+        private SortStatePosition GetSortStateFromSessionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentSortOrder) ?
+                (SortStatePosition)Enum.Parse(typeof(SortStatePosition),
+                HttpContext.Session.GetString(_currentSortOrder)) : SortStatePosition.No;
+        }
+        private int GetCurrentPageFromSessionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentPage) ?
+                Convert.ToInt32(HttpContext.Session.GetString(_currentPage)) : 1;
+        }
+        private string GetCurrentFilterPositionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentFilterPosition) ?
+                HttpContext.Session.GetString(_currentFilterPosition) : string.Empty;
         }
     }
 }

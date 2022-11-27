@@ -1,4 +1,4 @@
-﻿namespace WebApp.Models
+﻿namespace WebApp.Models.SortStates
 {
     public enum SortStateEmployee
     {

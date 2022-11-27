@@ -16,44 +16,44 @@ using WebApp.Models.SortStates;
 
 namespace WebApp.Controllers
 {
-    public class EmployeesController : Controller
+    public class StoragesController : Controller
     {
         private readonly RecPointContext _context;
         private int _pageSize = 40;
-        private string _currentPage = "pageEmployees";
+        private string _currentPage = "pageStorages";
         private string _currentSortOrder = "sortOrder";
-        private string _currentFilterSurname = "searchSurnameEmployees";
-        private string _currentFilterPosition = "searchPositionEmployees";
+        private string _currentFilterStorageType = "searchStorageTypeStorages";
+        private string _currentFilterName = "searchNameStorages";
 
-        public EmployeesController(RecPointContext context)
+        public StoragesController(RecPointContext context)
         {
             _context = context;
         }
 
         // GET: Employees
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
-        public IActionResult Index(SortStateEmployee? sortOrder, string searchSurname, string searchPosition, int? page, bool resetFilter = false)
+        public IActionResult Index(SortStateStorage? sortOrder, string searchStorageType, string searchName, int? page, bool resetFilter = false)
         {
-            IQueryable<Employee> employees = _context.Employees.Include(e => e.Position);
+            IQueryable<Storage> storages = _context.Storages.Include(s => s.StorageType);
             sortOrder ??= GetSortStateFromSessionOrSetDefault();
             page ??= GetCurrentPageFromSessionOrSetDefault();
-            if(resetFilter)
+            if (resetFilter)
             {
-                HttpContext.Session.Remove(_currentFilterSurname);
-                HttpContext.Session.Remove(_currentFilterPosition);
+                HttpContext.Session.Remove(_currentFilterStorageType);
+                HttpContext.Session.Remove(_currentFilterName);
             }
-            searchSurname ??= GetCurrentFilterSurnameOrSetDefault();
-            searchPosition ??= GetCurrentFilterPositionOrSetDefault();
-            employees = Search(employees, (SortStateEmployee)sortOrder, searchSurname, searchPosition);
-            var count = employees.Count();
-            employees = employees.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
-            SaveValuesInSession((SortStateEmployee)sortOrder, (int)page, searchSurname, searchPosition);
-            EmployeesViewModel employeesView = new EmployeesViewModel()
+            searchStorageType ??= GetCurrentFilterStorageTypeOrSetDefault();
+            searchName ??= GetCurrentFilterNameOrSetDefault();
+            storages = Search(storages, (SortStateStorage)sortOrder, searchStorageType, searchName);
+            var count = storages.Count();
+            storages = storages.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            SaveValuesInSession((SortStateStorage)sortOrder, (int)page, searchStorageType, searchName);
+            StoragesViewModel storagesView = new StoragesViewModel()
             {
-                Employees = employees,
+                Storages = storages,
                 PageViewModel = new PageViewModel(count, (int)page, _pageSize)
             };
-            return View(employeesView);
+            return View(storagesView);
         }
 
         // GET: Employees/Details/5
@@ -185,80 +185,89 @@ namespace WebApp.Controllers
             {
                 _context.Employees.Remove(employee);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool EmployeeExists(int id)
         {
-          return _context.Employees.Any(e => e.Id == id);
+            return _context.Employees.Any(e => e.Id == id);
         }
 
-        private IQueryable<Employee> Search(IQueryable<Employee> employees,
-            SortStateEmployee sortOrder, string searchSurname, string searchPosition)
+        private IQueryable<Storage> Search(IQueryable<Storage> storages,
+            SortStateStorage sortOrder, string searchStorageType, string searchName)
         {
-            ViewData["searchSurname"] = searchSurname;
-            ViewData["searchPosition"] = searchPosition;
-            employees = employees.Where(e => e.Surname.Contains(searchSurname ?? "")
-            & e.Position.Name.Contains(searchPosition ?? ""));
+            ViewData["searchName"] = searchName;
+            ViewData["searchStorageType"] = searchStorageType;
+            storages = storages.Where(e => e.Name.Contains(searchName ?? "")
+            & e.StorageType.Name.Contains(searchStorageType ?? ""));
 
-            ViewData["Surname"] = sortOrder == SortStateEmployee.SurnameAsc ? SortStateEmployee.SurnameDesc : SortStateEmployee.SurnameAsc;
-            ViewData["Name"] = sortOrder == SortStateEmployee.NameAsc ? SortStateEmployee.NameDesc : SortStateEmployee.NameAsc;
-            ViewData["Patronymic"] = sortOrder == SortStateEmployee.PatronymicAsc ? SortStateEmployee.PatronymicDesc : SortStateEmployee.PatronymicAsc;
-            ViewData["Experience"] = sortOrder == SortStateEmployee.ExperienceAsc ? SortStateEmployee.ExperienceDesc : SortStateEmployee.ExperienceAsc;
-            ViewData["Position"] = sortOrder == SortStateEmployee.PositionAsc ? SortStateEmployee.PositionDesc : SortStateEmployee.PositionAsc;
+            ViewData["Name"] = sortOrder == SortStateStorage.NameAsc ? SortStateStorage.NameDesc : SortStateStorage.NameAsc;
+            ViewData["Capacity"] = sortOrder == SortStateStorage.CapacityAsc ? SortStateStorage.CapacityDesc : SortStateStorage.CapacityAsc;
+            ViewData["CheckDate"] = sortOrder == SortStateStorage.CheckDateAsc ? SortStateStorage.CheckDateDesc : SortStateStorage.CheckDateAsc;
+            ViewData["Depreciation"] = sortOrder == SortStateStorage.DepreciationAsc ? SortStateStorage.DepreciationDesc : SortStateStorage.DepreciationAsc;
+            ViewData["Number"] = sortOrder == SortStateStorage.NumberAsc ? SortStateStorage.NumberDesc : SortStateStorage.NumberAsc;
+            ViewData["Square"] = sortOrder == SortStateStorage.SquareAsc ? SortStateStorage.SquareDesc : SortStateStorage.SquareAsc;
+            ViewData["Occupancy"] = sortOrder == SortStateStorage.OccupancyAsc ? SortStateStorage.OccupancyDesc : SortStateStorage.OccupancyAsc;
+            ViewData["StorageType"] = sortOrder == SortStateStorage.StorageTypeAsc ? SortStateStorage.StorageTypeDesc : SortStateStorage.StorageTypeAsc;
 
-            employees = sortOrder switch
+            storages = sortOrder switch
             {
-                SortStateEmployee.NameAsc => employees.OrderBy(e => e.Name),
-                SortStateEmployee.NameDesc => employees.OrderByDescending(e => e.Name),
-                SortStateEmployee.SurnameAsc => employees.OrderBy(e => e.Surname),
-                SortStateEmployee.SurnameDesc => employees.OrderByDescending(e => e.Surname),
-                SortStateEmployee.PatronymicAsc => employees.OrderBy(e => e.Patronymic),
-                SortStateEmployee.PatronymicDesc => employees.OrderByDescending(e => e.Patronymic),
-                SortStateEmployee.ExperienceAsc => employees.OrderBy(e => e.Experience),
-                SortStateEmployee.ExperienceDesc => employees.OrderByDescending(e => e.Experience),
-                SortStateEmployee.PositionAsc => employees.OrderBy(e => e.Position.Name),
-                SortStateEmployee.PositionDesc => employees.OrderByDescending(e => e.Position.Name),
-                SortStateEmployee.No => employees.OrderBy(e => e.Id),
-                _ => employees.OrderBy(e => e.Id)
+                SortStateStorage.NameAsc => storages.OrderBy(e => e.Name),
+                SortStateStorage.NameDesc => storages.OrderByDescending(e => e.Name),
+                SortStateStorage.CapacityAsc => storages.OrderBy(e => e.Capacity),
+                SortStateStorage.CapacityDesc => storages.OrderByDescending(e => e.Capacity),
+                SortStateStorage.CheckDateAsc => storages.OrderBy(e => e.CheckDate),
+                SortStateStorage.CheckDateDesc => storages.OrderByDescending(e => e.CheckDate),
+                SortStateStorage.DepreciationAsc => storages.OrderBy(e => e.Depreciation),
+                SortStateStorage.DepreciationDesc => storages.OrderByDescending(e => e.Depreciation),
+                SortStateStorage.NumberAsc => storages.OrderBy(e => e.Number),
+                SortStateStorage.NumberDesc => storages.OrderByDescending(e => e.Number),
+                SortStateStorage.StorageTypeAsc => storages.OrderBy(e => e.StorageType),
+                SortStateStorage.StorageTypeDesc => storages.OrderByDescending(e => e.StorageType),
+                SortStateStorage.OccupancyAsc => storages.OrderBy(e => e.Occupancy),
+                SortStateStorage.OccupancyDesc => storages.OrderByDescending(e => e.Occupancy),
+                SortStateStorage.SquareAsc => storages.OrderBy(e => e.Square),
+                SortStateStorage.SquareDesc => storages.OrderByDescending(e => e.Square),
+                SortStateStorage.No => storages.OrderBy(e => e.Id),
+                _ => storages.OrderBy(e => e.Id)
             };
 
-            return employees;
+            return storages;
         }
-        private void SaveValuesInSession(SortStateEmployee sortOrder, int page, string searchSurname, string searchPosition)
+        private void SaveValuesInSession(SortStateStorage sortOrder, int page, string searchStorageType, string searchName)
         {
             HttpContext.Session.Remove(_currentSortOrder);
             HttpContext.Session.Remove(_currentPage);
-            HttpContext.Session.Remove(_currentFilterSurname);
-            HttpContext.Session.Remove(_currentFilterPosition);
+            HttpContext.Session.Remove(_currentFilterName);
+            HttpContext.Session.Remove(_currentFilterStorageType);
             HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
             HttpContext.Session.SetString(_currentPage, page.ToString());
-            HttpContext.Session.SetString(_currentFilterSurname, searchSurname);
-            HttpContext.Session.SetString(_currentFilterPosition, searchPosition);
+            HttpContext.Session.SetString(_currentFilterName, searchName);
+            HttpContext.Session.SetString(_currentFilterStorageType, searchStorageType);
         }
-        private SortStateEmployee GetSortStateFromSessionOrSetDefault()
+        private SortStateStorage GetSortStateFromSessionOrSetDefault()
         {
-            return HttpContext.Session.Keys.Contains(_currentSortOrder) ? 
-                (SortStateEmployee)Enum.Parse(typeof(SortStateEmployee), 
-                HttpContext.Session.GetString(_currentSortOrder)) : SortStateEmployee.No;
+            return HttpContext.Session.Keys.Contains(_currentSortOrder) ?
+                (SortStateStorage)Enum.Parse(typeof(SortStateStorage),
+                HttpContext.Session.GetString(_currentSortOrder)) : SortStateStorage.No;
         }
         private int GetCurrentPageFromSessionOrSetDefault()
         {
             return HttpContext.Session.Keys.Contains(_currentPage) ?
                 Convert.ToInt32(HttpContext.Session.GetString(_currentPage)) : 1;
         }
-        private string GetCurrentFilterSurnameOrSetDefault()
+        private string GetCurrentFilterStorageTypeOrSetDefault()
         {
-            return HttpContext.Session.Keys.Contains(_currentFilterSurname) ?
-                HttpContext.Session.GetString(_currentFilterSurname) : string.Empty;
+            return HttpContext.Session.Keys.Contains(_currentFilterStorageType) ?
+                HttpContext.Session.GetString(_currentFilterStorageType) : string.Empty;
         }
 
-        private string GetCurrentFilterPositionOrSetDefault()
+        private string GetCurrentFilterNameOrSetDefault()
         {
-            return HttpContext.Session.Keys.Contains(_currentFilterPosition) ?
-                HttpContext.Session.GetString(_currentFilterPosition) : string.Empty;
+            return HttpContext.Session.Keys.Contains(_currentFilterName) ?
+                HttpContext.Session.GetString(_currentFilterName) : string.Empty;
         }
     }
 }

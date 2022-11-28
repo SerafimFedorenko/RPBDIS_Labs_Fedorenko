@@ -209,24 +209,24 @@ namespace WebApp.Controllers
 
             storages = sortOrder switch
             {
-                SortStateStorage.NameAsc => storages.OrderBy(e => e.Name),
-                SortStateStorage.NameDesc => storages.OrderByDescending(e => e.Name),
-                SortStateStorage.CapacityAsc => storages.OrderBy(e => e.Capacity),
-                SortStateStorage.CapacityDesc => storages.OrderByDescending(e => e.Capacity),
-                SortStateStorage.CheckDateAsc => storages.OrderBy(e => e.CheckDate),
-                SortStateStorage.CheckDateDesc => storages.OrderByDescending(e => e.CheckDate),
-                SortStateStorage.DepreciationAsc => storages.OrderBy(e => e.Depreciation),
-                SortStateStorage.DepreciationDesc => storages.OrderByDescending(e => e.Depreciation),
-                SortStateStorage.NumberAsc => storages.OrderBy(e => e.Number),
-                SortStateStorage.NumberDesc => storages.OrderByDescending(e => e.Number),
-                SortStateStorage.StorageTypeAsc => storages.OrderBy(e => e.StorageType),
-                SortStateStorage.StorageTypeDesc => storages.OrderByDescending(e => e.StorageType),
-                SortStateStorage.OccupancyAsc => storages.OrderBy(e => e.Occupancy),
-                SortStateStorage.OccupancyDesc => storages.OrderByDescending(e => e.Occupancy),
-                SortStateStorage.SquareAsc => storages.OrderBy(e => e.Square),
-                SortStateStorage.SquareDesc => storages.OrderByDescending(e => e.Square),
-                SortStateStorage.No => storages.OrderBy(e => e.Id),
-                _ => storages.OrderBy(e => e.Id)
+                SortStateStorage.NameAsc => storages.OrderBy(s => s.Name),
+                SortStateStorage.NameDesc => storages.OrderByDescending(s => s.Name),
+                SortStateStorage.CapacityAsc => storages.OrderBy(s => s.Capacity),
+                SortStateStorage.CapacityDesc => storages.OrderByDescending(s => s.Capacity),
+                SortStateStorage.CheckDateAsc => storages.OrderBy(s => s.CheckDate),
+                SortStateStorage.CheckDateDesc => storages.OrderByDescending(s => s.CheckDate),
+                SortStateStorage.DepreciationAsc => storages.OrderBy(s => s.Depreciation),
+                SortStateStorage.DepreciationDesc => storages.OrderByDescending(s => s.Depreciation),
+                SortStateStorage.NumberAsc => storages.OrderBy(s => s.Number),
+                SortStateStorage.NumberDesc => storages.OrderByDescending(s => s.Number),
+                SortStateStorage.StorageTypeAsc => storages.OrderBy(s => s.StorageType),
+                SortStateStorage.StorageTypeDesc => storages.OrderByDescending(s => s.StorageType),
+                SortStateStorage.OccupancyAsc => storages.OrderBy(s => s.Occupancy),
+                SortStateStorage.OccupancyDesc => storages.OrderByDescending(s => s.Occupancy),
+                SortStateStorage.SquareAsc => storages.OrderBy(s => s.Square),
+                SortStateStorage.SquareDesc => storages.OrderByDescending(s => s.Square),
+                SortStateStorage.No => storages.OrderBy(s => s.Id),
+                _ => storages.OrderBy(s => s.Id)
             };
 
             return storages;

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FuelStation.Controllers
+namespace WebApp.Controllers
 {
     [Authorize(Roles = "admin")]
     public class UsersController : Controller

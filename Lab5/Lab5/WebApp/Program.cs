@@ -56,7 +56,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace FuelStation
+namespace WebApp
 {
     public class Program
     {

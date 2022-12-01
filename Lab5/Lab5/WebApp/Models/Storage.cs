@@ -9,6 +9,7 @@ namespace WebApp.Models
         [Display(Name = "Код склада")]
         public int Id { get; set; }
         [ForeignKey("StorageType")]
+        [Display(Name = "Тип склада")]
         public int StorageTypeId { get; set; }
         [Display(Name = "Название")]
         public string Name { get; set; }

@@ -91,7 +91,7 @@ namespace WebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Id", storage.StorageTypeId);
+            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Name", storage.StorageTypeId);
             return View(storage);
         }
 
@@ -108,7 +108,7 @@ namespace WebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Id", storage.StorageTypeId);
+            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Name", storage.StorageTypeId);
             return View(storage);
         }
 
@@ -144,7 +144,7 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Id", storage.StorageTypeId);
+            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Name", storage.StorageTypeId);
             return View(storage);
         }
 

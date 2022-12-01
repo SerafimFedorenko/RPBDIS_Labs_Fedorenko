@@ -8,6 +8,7 @@ namespace WebApp.Models
         [Key]
         public int Id { get; set; }
         [ForeignKey("Position")]
+        [Display(Name = "Должность")]
         public int PositionId { get; set; }
         [Display(Name = "Имя")]
         public string Name { get; set; }

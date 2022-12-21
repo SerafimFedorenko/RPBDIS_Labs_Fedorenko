@@ -1,0 +1,301 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Принятое вторсырьё</title>
+    <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="lib/jquery/dist/jquery.js"></script>
+    <link href="lib/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="lib/jquery-ui/jquery-ui.js"></script>
+    <script src="lib/jquery-ui/ui/i18n/datepicker-ru.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Принятое вторсырьё</h2>
+        <form name="acceptedRecyclableForm">
+            <label for="accRecId" id="CRUD" name="CRUD">Добавить:</label>
+            <input type="hidden" id="accRecId" name="accRecId" value=0 />
+            <div class="form-group">
+                <label Добавить>Склад:</label>
+                <select id="storageId" name="storageId"></select>
+            </div>
+            <div class="form-group">
+                <label Добавить>Сотрудник:</label>
+                <select id="employeeId" name="employeeId"></select>
+            </div>
+            <div class="form-group">
+                <label Добавить>Вид вторсырья:</label>
+                <select id="recyclableTypeId" name="recyclableTypeId"></select>
+            </div>
+            <div>
+                <a id="filter" class="btn btn-sm btn-primary">Загрузить</a>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Количество</label>
+                <input class="form-control" name="quantity" id="quantity" />
+            </div>
+            <div class="form-group">
+                <label for="date">Дата</label>
+                <input class="form-control" name="date" id="date" />
+            </div>
+            <div class="panel-body">
+                <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+                <a id="reset" class="btn btn-sm btn-primary">Сбросить</a>
+            </div>
+        </form>
+
+
+        <table class="table table-condensed table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Код</th>
+                    <th>Склад</th>
+                    <th>Сотрудник</th>
+                    <th>Вид вторсырья</th>
+                    <th>Количество</th>
+                    <th>Дата</th>
+                </tr>
+            </thead>
+            <tbody id="data"></tbody>
+        </table>
+    </div>
+    <script>
+
+        function GetacceptedRecyclables() {
+            $.ajax({
+                url: '/api/acceptedRecyclables',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (acceptedRecyclables) {
+                    var rows = "";
+                    $.each(acceptedRecyclables, function (index, acceptedRecyclable) {
+                        // добавляем полученные элементы в таблицу
+                        rows += row(acceptedRecyclable);
+                    })
+                    $("table tbody#data").append(rows);
+                }
+            });
+        }
+
+        function GetFilteredAcceptedRecyclables() {
+            var form = document.forms["acceptedRecyclableForm"];
+            var storageId = form.elements["storageId"].selectedIndex;
+            var employeeId = form.elements["employeeId"].selectedIndex;
+            var recyclableTypeId = form.elements["recyclableTypeId"].selectedIndex;
+            $.ajax({
+                url: '/api/acceptedRecyclables/filteredacceptedRecyclables?EmployeeId=' + employeeId + '&StorageId=' + storageId + '&RecyclableTypeId=' + recyclableTypeId,
+                type: 'GET',
+                contentType: "application/json",
+                success: function (acceptedRecyclables) {
+                    var rows = "";
+                    $("table tbody#data").html("");
+                    $.each(acceptedRecyclables, function (index, acceptedRecyclable) {
+                        // добавляем полученные элементы в таблицу
+                        rows += row(acceptedRecyclable);
+                    })
+                    $("table tbody#data").append(rows);
+                }
+            });
+        }
+        // Получение одной операции
+        function GetacceptedRecyclable(accRecId) {
+            $.ajax({
+                url: '/api/acceptedRecyclables/' + accRecId,
+                type: 'GET',
+                contentType: "application/json",
+                success: function (acceptedRecyclable) {
+                    var form = document.forms["acceptedRecyclableForm"];
+                    form.elements["accRecId"].value = acceptedRecyclable.id;
+                    form.elements["storageId"].selectedIndex = acceptedRecyclable.storageId;
+                    form.elements["employeeId"].selectedIndex = acceptedRecyclable.employeeId;
+                    form.elements["recyclableTypeId"].selectedIndex = acceptedRecyclable.recyclableTypeId;
+                    form.elements["date"].value = acceptedRecyclable.date.substring(0, 10);
+                    form.elements["quantity"].value = acceptedRecyclable.quantity;
+                }
+            });
+        }
+
+        function CreateacceptedRecyclable(storageId, employeeId, recyclableTypeId, date, quantity) {
+            $.ajax({
+                url: "api/acceptedRecyclables",
+                contentType: "application/json",
+                method: "POST",
+                data: JSON.stringify({
+                    storageId: storageId,
+                    employeeId: employeeId,
+                    recyclableTypeId: recyclableTypeId,
+                    quantity: parseInt(quantity),
+                    date: date
+                }),
+                success: function (acceptedRecyclable) {
+                    reset();
+                    var form = document.forms["acceptedRecyclableForm"];
+                    //acceptedRecyclable.storageName = form.elements["storageId"].options[storageId].text;
+                    //acceptedRecyclable.employeeFIO = form.elements["employeeId"].options[employeeId].text;
+                    //acceptedRecyclable.recyclableTypeName = form.elements["recyclableTypeId"].options[recyclableTypeId].text;
+                    $("table tbody#data").append(row(acceptedRecyclable));
+                }
+            })
+        }
+        // Изменение операции
+        function EditacceptedRecyclable(accRecId, storageId, employeeId, recyclableTypeId, date, quantity) {
+            $.ajax({
+                url: "api/acceptedRecyclables",
+                contentType: "application/json",
+                method: "PUT",
+                data: JSON.stringify({
+                    id: parseInt(accRecId),
+                    storageId: storageId,
+                    employeeId: employeeId,
+                    recyclableTypeId: recyclableTypeId,
+                    quantity: parseInt(quantity),
+                    date: date
+                }),
+                success: function (acceptedRecyclable) {
+                    reset();
+                    var form = document.forms["acceptedRecyclableForm"];
+                    //acceptedRecyclable.storageId = form.elements["storageId"].options[storageId].text;
+                    //acceptedRecyclable.employeeId = form.elements["employeeId"].options[employeeId].text;
+                    //acceptedRecyclable.recyclableTypeId = form.elements["recyclableTypeId"].options[recyclableTypeId].text;
+                    $("tr[data-rowid='" + acceptedRecyclable.id + "']").replaceWith(row(acceptedRecyclable));
+                }
+            })
+        }
+
+        function reset() {
+            var form = document.forms["acceptedRecyclableForm"];
+            form.reset();
+            form.elements["accRecId"].value = 0;
+            $("#typeCRUD").html("Добавить:");
+        }
+
+
+        function DeleteacceptedRecyclable(accRecId) {
+            $.ajax({
+                url: "api/acceptedRecyclables/" + accRecId,
+                contentType: "application/json",
+                method: "DELETE",
+                success: function (acceptedRecyclable) {
+                    $("tr[data-rowid='" + acceptedRecyclable.id + "']").remove();
+                }
+            })
+        }
+        // создание строки для таблицы
+        var row = function (acceptedRecyclable) {
+            return "<tr data-rowid='" + acceptedRecyclable.id + "'><td>" + acceptedRecyclable.id + "</td>" +
+                "<td>" + acceptedRecyclable.storageName + "</td>" +
+                "<td>" + acceptedRecyclable.employeeFIO + "</td>" +
+                "<td>" + acceptedRecyclable.recyclableTypeName + "</td>" +
+                "<td>" + acceptedRecyclable.quantity + "</td>" +
+                "<td>" + acceptedRecyclable.date.substring(0, 10) + "</td>" +
+                "<td><a class='editLink' data-id='" + acceptedRecyclable.id + "'>Изменить</a> | " +
+                "<a class='removeLink' data-id='" + acceptedRecyclable.id + "'>Удалить</a></td></tr>";
+        }
+
+        function GetStorages() {
+            var listItems = "";
+            $.ajax({
+                url: '/api/acceptedRecyclables/storages',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (storages) {
+                    listItems = listItems + "<option value=0 selected>(выбор)</option>";
+                    $.each(storages, function (index, storage) {
+                        listItems = listItems + "<option value='" + storage.id + "'>" + storage.name + "</option>";
+                    });
+                    $("#storageId").html(listItems);
+                }
+            });
+        }
+
+        function GetRecyclableTypes() {
+            var listItems = "";
+            $.ajax({
+                url: '/api/acceptedRecyclables/recyclableTypes',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (recyclableTypes) {
+                    listItems = listItems + "<option value=0 selected>(выбор)</option>";
+                    $.each(recyclableTypes, function (index, recyclableType) {
+                        listItems = listItems + "<option value='" + recyclableType.id + "'>" + recyclableType.name + "</option>";
+                    });
+                    $("#recyclableTypeId").html(listItems);
+                }
+            });
+        }
+
+
+        function GetEmployees() {
+            var listItems = "";
+            $.ajax({
+                url: '/api/acceptedRecyclables/employees',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (employees) {
+                    listItems = listItems + "<option value=0 selected>(выбор)</option>";
+                    $.each(employees, function (index, employee) {
+                        listItems = listItems + "<option value='" + employee.id + "'>" + employee.surname + " " + employee.name + " " + employee.patronymic + "</option>";
+                    });
+                    $("#employeeId").html(listItems);
+                }
+            });
+        }
+
+        // сброс значений формы
+        $("#reset").click(function (e) {
+            e.preventDefault();
+            reset();
+        })
+
+
+        // фильтрация
+        $("#filter").click(function (e) {
+            GetFilteredAcceptedRecyclables();
+        })
+
+        // отправка формы
+        $("form").submit(function (e) {
+
+            e.preventDefault();
+            var accRecId = this.elements["accRecId"].value;
+            var storageId = this.elements["storageId"].selectedIndex;
+            var employeeId = this.elements["employeeId"].selectedIndex;
+            var recyclableTypeId = this.elements["recyclableTypeId"].selectedIndex;
+            var quantity = this.elements["quantity"].value;
+            var date = this.elements["date"].value;
+            if (accRecId == 0)
+                CreateacceptedRecyclable(storageId, employeeId, recyclableTypeId, date, quantity);
+            else
+                EditacceptedRecyclable(accRecId, storageId, employeeId, recyclableTypeId, date, quantity);
+        });
+
+        // нажатие на ссылку Изменить
+        $("body").on("click", ".editLink", function () {
+            var id = $(this).data("id");
+            $("#typeCRUD").html("Изменить:");
+            GetacceptedRecyclable(id);
+        })
+        // нажатие на ссылку Удалить
+        $("body").on("click", ".removeLink", function () {
+            var id = $(this).data("id");
+            DeleteacceptedRecyclable(id);
+            reset();
+        })
+
+
+        // загрузка данных для таблицы и ее формирование
+
+        GetacceptedRecyclables();
+        GetStorages();
+        GetEmployees();
+        GetRecyclableTypes();
+        
+
+        //ввод даты с использованием специального окна
+        $(document).ready(function () {
+            $("#date").datepicker({ dateFormat: "yy-mm-dd" });
+        });
+    </script>
+</body>
+</html>

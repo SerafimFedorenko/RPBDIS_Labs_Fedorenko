@@ -26,7 +26,7 @@ namespace WebApp.Controllers
             _context = context;
         }
 
-        // GET: Employees
+        // GET: Storages
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
         public IActionResult Index(SortStateStorage? sortOrder, string searchStorageType, string searchName, int? page, bool resetFilter = false)
         {

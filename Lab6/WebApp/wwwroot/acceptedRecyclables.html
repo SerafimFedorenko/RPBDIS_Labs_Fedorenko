@@ -131,9 +131,9 @@
                 success: function (acceptedRecyclable) {
                     reset();
                     var form = document.forms["acceptedRecyclableForm"];
-                    //acceptedRecyclable.storageName = form.elements["storageId"].options[storageId].text;
-                    //acceptedRecyclable.employeeFIO = form.elements["employeeId"].options[employeeId].text;
-                    //acceptedRecyclable.recyclableTypeName = form.elements["recyclableTypeId"].options[recyclableTypeId].text;
+                    acceptedRecyclable.storageName = form.elements["storageId"].options[storageId].text;
+                    acceptedRecyclable.employeeFIO = form.elements["employeeId"].options[employeeId].text;
+                    acceptedRecyclable.recyclableTypeName = form.elements["recyclableTypeId"].options[recyclableTypeId].text;
                     $("table tbody#data").append(row(acceptedRecyclable));
                 }
             })
@@ -155,9 +155,9 @@
                 success: function (acceptedRecyclable) {
                     reset();
                     var form = document.forms["acceptedRecyclableForm"];
-                    //acceptedRecyclable.storageId = form.elements["storageId"].options[storageId].text;
-                    //acceptedRecyclable.employeeId = form.elements["employeeId"].options[employeeId].text;
-                    //acceptedRecyclable.recyclableTypeId = form.elements["recyclableTypeId"].options[recyclableTypeId].text;
+                    acceptedRecyclable.storageName = form.elements["storageId"].options[storageId].text;
+                    acceptedRecyclable.employeeFIO = form.elements["employeeId"].options[employeeId].text;
+                    acceptedRecyclable.recyclableTypeName = form.elements["recyclableTypeId"].options[recyclableTypeId].text;
                     $("tr[data-rowid='" + acceptedRecyclable.id + "']").replaceWith(row(acceptedRecyclable));
                 }
             })

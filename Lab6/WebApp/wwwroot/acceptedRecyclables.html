@@ -98,7 +98,7 @@
                 }
             });
         }
-        // Получение одной операции
+
         function GetacceptedRecyclable(accRecId) {
             $.ajax({
                 url: '/api/acceptedRecyclables/' + accRecId,
@@ -138,7 +138,7 @@
                 }
             })
         }
-        // Изменение операции
+
         function EditacceptedRecyclable(accRecId, storageId, employeeId, recyclableTypeId, date, quantity) {
             $.ajax({
                 url: "api/acceptedRecyclables",
